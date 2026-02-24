@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OneLife | Prayer Room</title>
+
+<style>
+/* ========================================= */
+/* GLOBAL BACKGROUND */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, black, red, green, blue, purple);
+    background-size: 400% 400%;
+    animation: rainbowBG 20s ease infinite;
+    color: white;
+}
+
+@keyframes rainbowBG {
+    0% { background-position:0% 50%; }
+    50% { background-position:100% 50%; }
+    100% { background-position:0% 50%; }
+}
+
+/* ========================================= */
+/* HEADER */
+header {
+    text-align: center;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    background: rgba(0,0,0,0.7);
+}
+
+/* ========================================= */
+/* CONTAINER */
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================= */
+/* PRAYER INPUT */
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    resize: none;
+    font-size: 16px;
+    background: rgba(255,255,255,0.05);
+    color: white;
+}
+
+/* ========================================= */
+/* BUTTONS */
+button {
+    padding: 12px 20px;
+    margin: 10px 5px 0 0;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    color: white;
+}
+
+/* ========================================= */
+/* PRAYER LIST */
+.prayer-list {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.prayer-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prayer-item p {
+    margin: 0;
+    flex: 1;
+}
+
+/* ========================================= */
+/* BACK BUTTON */
+.back {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    text-decoration: none;
+    color: white;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    textarea { height: 100px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>🙏 Prayer Room</header>
+
+<div class="container">
+<textarea id="prayerInput" placeholder="Write your prayer here..."></textarea>
+<div>
+<button onclick="addPrayer()">Save Prayer</button>
+<button onclick="clearAll()">Clear All</button>
+</div>
+
+<div class="prayer-list" id="prayerList"></div>
+
+<a href="index.html" class="back">⬅ Back to Dashboard</a>
+</div>
+
+<script>
+/* ========================================= */
+/* LOAD PRAYERS FROM LOCALSTORAGE */
+let prayers = JSON.parse(localStorage.getItem('prayers')) || [];
+const prayerListDiv = document.getElementById("prayerList");
+
+function renderPrayers(){
+    prayerListDiv.innerHTML = "";
+    prayers.forEach((prayer,index)=>{
+        const div = document.createElement("div");
+        div.classList.add("prayer-item");
+        div.innerHTML = `<p>${prayer}</p>
+        <div>
+        <button onclick="editPrayer(${index})">✏</button>
+        <button onclick="deletePrayer(${index})">🗑</button>
+        </div>`;
+        prayerListDiv.appendChild(div);
+    });
+}
+
+function savePrayers(){
+    localStorage.setItem('prayers', JSON.stringify(prayers));
+}
+
+/* ========================================= */
+/* ADD PRAYER */
+function addPrayer(){
+    const input = document.getElementById("prayerInput");
+    const text = input.value.trim();
+    if(text===""){ alert("Please enter a prayer"); return; }
+    prayers.push(text);
+    savePrayers();
+    renderPrayers();
+    input.value="";
+}
+
+/* ========================================= */
+/* EDIT PRAYER */
+function editPrayer(index){
+    const newText = prompt("Edit your prayer:", prayers[index]);
+    if(newText!==null && newText.trim()!==""){
+        prayers[index]=newText.trim();
+        savePrayers();
+        renderPrayers();
+    }
+}
+
+/* ========================================= */
+/* DELETE PRAYER */
+function deletePrayer(index){
+    if(confirm("Delete this prayer?")){
+        prayers.splice(index,1);
+        savePrayers();
+        renderPrayers();
+    }
+}
+
+/* ========================================= */
+/* CLEAR ALL */
+function clearAll(){
+    if(confirm("Delete all prayers?")){
+        prayers=[];
+        savePrayers();
+        renderPrayers();
+    }
+}
+
+/* ========================================= */
+/* INITIAL RENDER */
+renderPrayers();
+
+</script>
+
+</body>
+</html>
