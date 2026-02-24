@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OneLife | Donate & Join WhatsApp</title>
+
+<style>
+/* ========================================= */
+/* GLOBAL BACKGROUND */
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(135deg, black, red, green, blue, purple);
+    background-size:400% 400%;
+    animation: rainbowBG 20s ease infinite;
+    color:white;
+}
+@keyframes rainbowBG{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* ========================================= */
+/* HEADER */
+header{
+    text-align:center;
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
+    background: rgba(0,0,0,0.7);
+}
+
+/* ========================================= */
+/* CONTAINER */
+.container{
+    max-width:900px;
+    margin:30px auto;
+    padding:30px;
+    background: rgba(255,255,255,0.08);
+    border-radius:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    text-align:center;
+}
+
+/* ========================================= */
+/* INPUT & BUTTONS */
+input[type=number]{
+    padding:12px;
+    width:60%;
+    border-radius:15px;
+    border:none;
+    font-size:16px;
+    margin-bottom:15px;
+    background: rgba(255,255,255,0.05);
+    color:white;
+}
+
+button{
+    padding:12px 25px;
+    margin:10px;
+    border-radius:30px;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    color:white;
+    transition:0.3s;
+}
+button:hover{ transform: scale(1.05); }
+
+/* ========================================= */
+/* DONATION INFO */
+.donation-info{
+    margin:20px 0;
+    font-size:1.2em;
+}
+
+/* BACK BUTTON */
+.back{
+    display:inline-block;
+    margin-top:20px;
+    padding:10px 20px;
+    border-radius:30px;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    text-decoration:none;
+    color:white;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    input[type=number]{width:80%;}
+}
+</style>
+</head>
+
+<body>
+
+<header>💖 Support OneLife & Join WhatsApp</header>
+
+<div class="container">
+<p class="donation-info">Support the team by sending any amount to <strong>+231889183557</strong></p>
+
+<input type="number" id="donationAmount" placeholder="Enter amount (e.g., 5.00)" step="0.01" min="0.01">
+<br>
+<button onclick="copyNumber()">Copy Donation Number</button>
+<button onclick="sendDonation()">Send Donation</button>
+<br><br>
+<button onclick="joinWhatsApp()">Join WhatsApp Group</button>
+
+<a href="index.html" class="back">⬅ Back to Dashboard</a>
+</div>
+
+<script>
+/* ========================================= */
+/* COPY NUMBER */
+function copyNumber(){
+    const number = "+231889183557";
+    navigator.clipboard.writeText(number).then(()=>{
+        alert("Donation number copied: "+number);
+    }).catch(()=>{ alert("Failed to copy"); });
+}
+
+/* ========================================= */
+/* SEND DONATION */
+function sendDonation(){
+    const amount = parseFloat(document.getElementById("donationAmount").value);
+    if(isNaN(amount) || amount<=0){
+        alert("Please enter a valid donation amount.");
+        return;
+    }
+    const number = "+231889183557";
+    alert(`Thank you for your donation of ${amount.toFixed(2)}! Send it to ${number}.`);
+}
+
+/* ========================================= */
+/* JOIN WHATSAPP */
+function joinWhatsApp(){
+    window.open("https://chat.whatsapp.com/JaTMhWxIBM0EY5out6HWLB?mode=gi_t","_blank");
+}
+
+</script>
+
+</body>
+</html>
