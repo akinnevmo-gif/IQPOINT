@@ -84,39 +84,21 @@ header{
 </div>
 
 <script>
-const quotes=[
-"Trust in the Lord with all your heart.",
-"Faith can move mountains.",
-"Do not be afraid; I am with you.",
-"God's plans are higher than your plans.",
-"Pray without ceasing.",
-"Be strong and courageous.",
-"Love your neighbor as yourself.",
-"Seek first the kingdom of God.",
-"The Lord is my shepherd, I shall not want.",
-"Commit your works to the Lord and your plans will succeed.",
-"Blessed is the man who trusts in the Lord.",
-"God will supply all your needs according to His riches.",
-"Let all that you do be done in love.",
-"Rejoice always, pray continually, give thanks in all circumstances.",
-"Do not be anxious about anything.",
-"Cast your burden upon the Lord.",
-"God’s grace is sufficient for you.",
-"Walk in the Spirit and you shall not fulfill the lust of the flesh.",
-"Be still and know that I am God.",
-"Delight yourself in the Lord and He will give you the desires of your heart.",
-// … continue until you reach 500 quotes
-// For demonstration, you can loop or import JSON for all 500
-];
+// =========================================
+// FETCH QUOTES JSON
+const quoteContainer = document.getElementById("quoteContainer");
 
-// RENDER QUOTES
-const quoteContainer=document.getElementById("quoteContainer");
-quotes.forEach(q=>{
-    const div=document.createElement("div");
-    div.classList.add("card");
-    div.innerHTML=`<h3>💡 Inspiration</h3><p>${q}</p>`;
-    quoteContainer.appendChild(div);
-});
+fetch('quotes.json')
+  .then(response => response.json())
+  .then(quotes => {
+      quotes.forEach(q => {
+          const div = document.createElement("div");
+          div.classList.add("card");
+          div.innerHTML = `<h3>💡 Inspiration</h3><p>${q}</p>`;
+          quoteContainer.appendChild(div);
+      });
+  })
+  .catch(err => console.error("Failed to load quotes.json:", err));
 </script>
 
 </body>
