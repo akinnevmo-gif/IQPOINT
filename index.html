@@ -7,7 +7,7 @@
 
 <!-- PWA META -->
 <meta name="theme-color" content="#000000">
-<meta name="description" content="OneLife Gospel Experience - Word, Worship, Prayer, Motivation & Teachings">
+<meta name="description" content="OneLife Gospel Experience - Word, Worship, Prayer, Motivation & Teachings & Bible Stories">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,6 +23,7 @@ body{
     background-size:400% 400%;
     animation: rainbowBG 18s ease infinite;
     color:white;
+    perspective:1200px;
 }
 @keyframes rainbowBG{
     0%{background-position:0% 50%;}
@@ -30,7 +31,6 @@ body{
     100%{background-position:0% 50%;}
 }
 
-/* ========================================= */
 /* HEADER */
 header{
     text-align:center;
@@ -75,28 +75,36 @@ header{
     gap:25px;
 }
 
-/* CARDS */
+/* 3D CARD EFFECT */
 .card{
     background: rgba(255,255,255,0.08);
     padding:30px;
     border-radius:25px;
     text-align:center;
     cursor:pointer;
-    transition:0.4s;
-    backdrop-filter: blur(8px);
-    box-shadow:0 20px 40px rgba(0,0,0,0.7);
+    transition: transform 0.5s ease, background 0.5s ease;
     transform-style: preserve-3d;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
 }
 .card:hover{
-    transform: scale(1.07) rotateX(6deg) rotateY(6deg);
+    transform: rotateY(15deg) rotateX(10deg) scale(1.08);
     background: rgba(255,255,255,0.15);
 }
 
+/* CARD TEXT */
+.card h3{
+    margin:0 0 10px;
+    font-size:22px;
+    text-shadow:2px 2px 8px black;
+}
+
 /* RESPONSIVE */
-@media(max-width:768px){ .container{padding:20px;} }
+@media(max-width:768px){ 
+    .container{padding:20px;} 
+    .card{padding:20px;}
+}
 </style>
 </head>
-
 <body>
 
 <header>🌈 OneLife Dashboard</header>
@@ -108,12 +116,14 @@ header{
 <div class="container">
 <div class="dashboard">
 
+<!-- FEATURE CARDS -->
 <div class="card" onclick="location.href='cross.html'">✝ 3D Cross Experience</div>
 <div class="card" onclick="location.href='worship.html'">🎵 Worship Player</div>
 <div class="card" onclick="location.href='bible-search.html'">📖 Bible Search</div>
 <div class="card" onclick="location.href='prayer-room.html'">🙏 Prayer Room</div>
 <div class="card" onclick="location.href='motivation-teachings.html'">💬 Motivation & Teachings</div>
 <div class="card" onclick="location.href='donation.html'">💖 Donate & WhatsApp</div>
+<div class="card" onclick="location.href='bible-stories.html'">📜 Bible Stories</div>
 
 </div>
 </div>
