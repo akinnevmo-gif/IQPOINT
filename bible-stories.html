@@ -3,78 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OneLife | Bible Stories</title>
+<title>OneLife | Bible Stories 3D</title>
 <style>
+/* ========================================= */
+/* GLOBAL BACKGROUND */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
     background: linear-gradient(135deg, black, red, green, blue, purple);
     background-size:400% 400%;
-    animation: rainbowBG 20s ease infinite;
+    animation: rainbowBG 25s ease infinite;
     color:white;
+    perspective: 1200px;
 }
 @keyframes rainbowBG{
     0%{background-position:0% 50%;}
     50%{background-position:100% 50%;}
     100%{background-position:0% 50%;}
 }
+
+/* HEADER */
 header{
     text-align:center;
-    padding:20px;
-    font-size:28px;
+    padding:25px;
+    font-size:30px;
     font-weight:bold;
     background: rgba(0,0,0,0.7);
+    letter-spacing:2px;
 }
+
+/* CONTAINER & GRID */
 .container{
-    max-width:1100px;
+    max-width:1200px;
     margin:30px auto;
     padding:30px;
     background: rgba(255,255,255,0.08);
     border-radius:25px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.7);
     backdrop-filter: blur(10px);
 }
 .cards{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:25px;
 }
+
+/* 3D CARD EFFECT */
 .card{
     background: rgba(255,255,255,0.08);
-    border-radius:20px;
-    padding:25px;
+    border-radius:25px;
+    padding:30px;
     cursor:pointer;
     text-align:center;
-    transition:0.5s;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    transition: transform 0.5s ease, background 0.5s ease;
     transform-style: preserve-3d;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    overflow:hidden;
 }
 .card:hover{
-    transform: scale(1.05) rotateX(5deg) rotateY(5deg);
+    transform: rotateY(15deg) rotateX(10deg) scale(1.08);
     background: rgba(255,255,255,0.15);
 }
+
+/* STORY TITLE */
+.card h3{
+    margin:0 0 10px;
+    font-size:22px;
+    text-shadow: 2px 2px 8px black;
+}
+
+/* STORY PREVIEW (animated) */
+.card p{
+    margin:0;
+    font-size:16px;
+    line-height:1.5em;
+    max-height:120px;
+    overflow:hidden;
+    display:block;
+    animation: textReveal 2s linear forwards;
+}
+@keyframes textReveal{
+    0%{opacity:0; transform: translateY(20px);}
+    100%{opacity:1; transform: translateY(0);}
+}
+
+/* MODAL */
 .modal{
     display:none;
     position:fixed;
     z-index:100;
     left:0; top:0;
     width:100%; height:100%;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0,0,0,0.98);
     padding-top:50px;
     box-sizing:border-box;
+    perspective: 1200px;
 }
 .modal-content{
     margin:auto;
     background: rgba(255,255,255,0.05);
     border-radius:25px;
     width:80%;
-    max-width:700px;
-    padding:20px;
+    max-width:800px;
+    padding:30px;
     color:white;
     text-align:center;
-    animation: fadeIn 0.5s;
+    transform-style: preserve-3d;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
 }
-@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+.modal-content p{
+    font-size:18px;
+    line-height:1.7em;
+    animation: storyReveal 0.05s steps(1) forwards;
+}
+@keyframes storyReveal{
+    0%{opacity:0; transform: translateY(20px);}
+    100%{opacity:1; transform: translateY(0);}
+}
 .close{
     color:white;
     float:right;
@@ -82,6 +126,8 @@ header{
     font-weight:bold;
     cursor:pointer;
 }
+
+/* BACK BUTTON */
 .back{
     display:inline-block;
     margin-top:20px;
@@ -91,15 +137,17 @@ header{
     text-decoration:none;
     color:white;
 }
+
+/* RESPONSIVE */
 @media(max-width:768px){
     .card{padding:20px;}
-    .modal-content{width:90%;}
+    .modal-content{width:90%; padding:20px;}
 }
 </style>
 </head>
 <body>
 
-<header>📜 Bible Stories</header>
+<header>📜 Bible Stories 3D</header>
 
 <div class="container">
 <div class="cards" id="cardsContainer"></div>
@@ -117,64 +165,64 @@ header{
 
 <script>
 /* ========================================= */
-/* SAMPLE 50 BIBLE STORIES DATA */
+/* 50 BIBLE STORIES DATA */
 const stories = [
-{title:"Creation of the World",text:"God created the heavens and the earth in six days and rested on the seventh..."},
-{title:"Adam and Eve",text:"God formed Adam and Eve and placed them in the Garden of Eden..."},
-{title:"Noah's Ark",text:"God commanded Noah to build an ark to save his family and animals from the flood..."},
-{title:"Tower of Babel",text:"People built a tower to reach heaven, God confused their language..."},
-{title:"Abraham's Call",text:"God called Abraham to leave his country and promised blessings..."},
-{title:"Sodom and Gomorrah",text:"God destroyed the cities because of wickedness, sparing Lot's family..."},
-{title:"Isaac and Rebekah",text:"Isaac married Rebekah as God guided Abraham's servant..."},
-{title:"Jacob and Esau",text:"Jacob received the blessing intended for Esau by God's plan..."},
-{title:"Joseph in Egypt",text:"Joseph was sold by his brothers, rose to power, and saved Egypt from famine..."},
-{title:"Moses and the Exodus",text:"God delivered the Israelites from Egypt through Moses..."},
-{title:"Ten Commandments",text:"God gave Moses the Ten Commandments on Mount Sinai..."},
+{title:"Creation of the World",text:"God created the heavens and the earth in six days and rested on the seventh day, blessing all that He had made..."},
+{title:"Adam and Eve",text:"God formed Adam from the dust and breathed life into him, and created Eve from Adam's rib to be his companion..."},
+{title:"Noah's Ark",text:"God commanded Noah to build an ark to save his family and two of every animal from the flood..."},
+{title:"Tower of Babel",text:"People built a tower to reach heaven, God confused their languages and scattered them..."},
+{title:"Abraham's Call",text:"God called Abraham to leave his home and promised him numerous descendants..."},
+{title:"Sodom and Gomorrah",text:"God destroyed the wicked cities, sparing only Lot and his family..."},
+{title:"Isaac and Rebekah",text:"Isaac married Rebekah following God's guidance through Abraham's servant..."},
+{title:"Jacob and Esau",text:"Jacob received the blessing intended for Esau according to God's plan..."},
+{title:"Joseph in Egypt",text:"Joseph was sold by his brothers, rose to power in Egypt, and saved the nation from famine..."},
+{title:"Moses and the Exodus",text:"God delivered the Israelites from Egypt through Moses, parting the Red Sea..."},
+{title:"Ten Commandments",text:"God gave Moses the Ten Commandments on Mount Sinai to guide His people..."},
 {title:"Joshua and Jericho",text:"Joshua led the Israelites to conquer Jericho as God commanded..."},
-{title:"Ruth and Naomi",text:"Ruth stayed faithful to Naomi and was blessed..."},
-{title:"David and Goliath",text:"David defeated Goliath with faith and a sling..."},
-{title:"King Solomon",text:"Solomon became king and asked God for wisdom..."},
-{title:"Elijah and the Prophets of Baal",text:"Elijah proved the Lord's power over Baal..."},
-{title:"Elisha and the Widow's Oil",text:"Elisha multiplied the widow's oil, saving her family..."},
-{title:"Daniel in the Lion's Den",text:"Daniel was saved by God when thrown into the lions' den..."},
-{title:"Shadrach, Meshach, Abednego",text:"God protected them in the fiery furnace..."},
-{title:"Jonah and Nineveh",text:"Jonah preached repentance and Nineveh was spared..."},
+{title:"Ruth and Naomi",text:"Ruth stayed faithful to Naomi and was blessed for her loyalty..."},
+{title:"David and Goliath",text:"David defeated Goliath with faith, a sling, and a stone, trusting God..."},
+{title:"King Solomon",text:"Solomon became king and asked God for wisdom, which He granted abundantly..."},
+{title:"Elijah and the Prophets of Baal",text:"Elijah proved the Lord's power over Baal by fire consuming the sacrifice..."},
+{title:"Elisha and the Widow's Oil",text:"Elisha multiplied the widow's oil to save her family from debt..."},
+{title:"Daniel in the Lion's Den",text:"Daniel was saved by God when thrown into the lions' den for praying faithfully..."},
+{title:"Shadrach, Meshach, Abednego",text:"God protected them from the fiery furnace as they refused to worship idols..."},
+{title:"Jonah and Nineveh",text:"Jonah preached repentance to Nineveh and the city was spared..."},
 {title:"Esther Saves Her People",text:"Queen Esther bravely saved the Jewish people from Haman's plot..."},
-{title:"Job's Patience",text:"Job remained faithful despite suffering and was restored..."},
-{title:"Birth of Jesus",text:"Jesus was born in Bethlehem to Mary and Joseph..."},
-{title:"Jesus in the Temple",text:"Jesus amazed the teachers with his wisdom as a boy..."},
-{title:"John the Baptist",text:"John baptized people and prepared the way for Jesus..."},
-{title:"Jesus' Baptism",text:"Jesus was baptized by John in the Jordan River..."},
-{title:"Sermon on the Mount",text:"Jesus taught the Beatitudes and the way of life..."},
-{title:"Miracles of Jesus",text:"Jesus healed the sick, blind, and performed many wonders..."},
-{title:"Parables of Jesus",text:"Jesus taught through parables about the Kingdom of God..."},
-{title:"Jesus Walks on Water",text:"Jesus walked on the sea to reach his disciples..."},
-{title:"Jesus Feeds 5000",text:"Jesus multiplied five loaves and two fish to feed thousands..."},
-{title:"Transfiguration",text:"Jesus was transfigured on the mountain, revealing His glory..."},
-{title:"Triumphal Entry",text:"Jesus entered Jerusalem on a donkey, hailed by crowds..."},
-{title:"Last Supper",text:"Jesus shared the Passover meal with his disciples..."},
-{title:"Garden of Gethsemane",text:"Jesus prayed before His arrest..."},
-{title:"Crucifixion",text:"Jesus was crucified for the sins of the world..."},
-{title:"Resurrection",text:"Jesus rose from the dead on the third day..."},
-{title:"Great Commission",text:"Jesus commanded His disciples to go and make disciples..."},
-{title:"Pentecost",text:"The Holy Spirit descended on the apostles..."},
-{title:"Conversion of Saul",text:"Saul became Paul after encountering Jesus on the road to Damascus..."},
-{title:"Paul's Missionary Journeys",text:"Paul spread the gospel across the Roman Empire..."},
-{title:"Shipwreck of Paul",text:"Paul survived a shipwreck and continued his mission..."},
-{title:"Peter Walks on Water",text:"Peter attempted to walk on water toward Jesus..."},
-{title:"Healing of the Lame Man",text:"Peter and John healed a man lame from birth..."},
-{title:"Ananias and Sapphira",text:"They lied about offerings and faced consequences..."},
-{title:"Conversion of Cornelius",text:"Peter shared the gospel with Gentiles in Caesarea..."},
+{title:"Job's Patience",text:"Job remained faithful despite immense suffering and was ultimately restored..."},
+{title:"Birth of Jesus",text:"Jesus was born in Bethlehem to Mary and Joseph, bringing salvation to the world..."},
+{title:"Jesus in the Temple",text:"Jesus amazed the teachers with His wisdom as a boy in the temple..."},
+{title:"John the Baptist",text:"John baptized people and prepared the way for Jesus Christ..."},
+{title:"Jesus' Baptism",text:"Jesus was baptized by John in the Jordan River as the Spirit descended..."},
+{title:"Sermon on the Mount",text:"Jesus taught the Beatitudes and the path of righteousness to His followers..."},
+{title:"Miracles of Jesus",text:"Jesus healed the sick, raised the dead, and performed many signs..."},
+{title:"Parables of Jesus",text:"Jesus taught spiritual truths through parables to illustrate the Kingdom of God..."},
+{title:"Jesus Walks on Water",text:"Jesus walked on water to reach His disciples during a storm..."},
+{title:"Jesus Feeds 5000",text:"Jesus multiplied five loaves and two fish to feed thousands of people..."},
+{title:"Transfiguration",text:"Jesus was transfigured on the mountain, showing His glory to Peter, James, and John..."},
+{title:"Triumphal Entry",text:"Jesus entered Jerusalem riding a donkey, hailed by crowds as the Messiah..."},
+{title:"Last Supper",text:"Jesus shared the Passover meal with His disciples, teaching servanthood and sacrifice..."},
+{title:"Garden of Gethsemane",text:"Jesus prayed fervently before His arrest, submitting to God's will..."},
+{title:"Crucifixion",text:"Jesus was crucified on Golgotha for the sins of humanity..."},
+{title:"Resurrection",text:"Jesus rose from the dead on the third day, conquering death and sin..."},
+{title:"Great Commission",text:"Jesus commanded His disciples to go and make disciples of all nations..."},
+{title:"Pentecost",text:"The Holy Spirit descended upon the apostles, empowering them to spread the Gospel..."},
+{title:"Conversion of Saul",text:"Saul encountered Jesus on the road to Damascus and became Paul, the apostle..."},
+{title:"Paul's Missionary Journeys",text:"Paul spread the Gospel throughout the Roman Empire, planting churches..."},
+{title:"Shipwreck of Paul",text:"Paul survived a shipwreck on his way to Rome but continued preaching..."},
+{title:"Peter Walks on Water",text:"Peter briefly walked on water toward Jesus but faltered in doubt..."},
+{title:"Healing of the Lame Man",text:"Peter and John healed a man lame from birth at the temple gate..."},
+{title:"Ananias and Sapphira",text:"They lied about their offering and faced consequences, teaching honesty..."},
+{title:"Conversion of Cornelius",text:"Peter shared the Gospel with Gentiles, showing salvation is for all..."},
 {title:"John's Revelation",text:"John received visions of the end times and the return of Christ..."}
 ];
 
 /* ========================================= */
-/* RENDER STORY CARDS */
+/* RENDER 3D CARDS */
 const cardsContainer = document.getElementById("cardsContainer");
-stories.forEach((story,index)=>{
+stories.forEach((story)=>{
     const div = document.createElement("div");
     div.classList.add("card");
-    div.innerHTML = `<h3>${story.title}</h3><p>${story.text.substring(0,80)}...</p>`;
+    div.innerHTML = `<h3>${story.title}</h3><p>${story.text.substring(0,100)}...</p>`;
     div.onclick = ()=> openModal(story);
     cardsContainer.appendChild(div);
 });
@@ -193,7 +241,6 @@ function openModal(story){
 }
 closeModal.addEventListener("click",()=>modal.style.display="none");
 window.addEventListener("click", e => { if(e.target===modal) modal.style.display="none"; });
-
 </script>
 </body>
 </html>
