@@ -4,129 +4,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OneLife | Bible Search</title>
-
 <style>
-/* ========================================= */
-/* GLOBAL BACKGROUND */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
     background: linear-gradient(135deg, black, red, green, blue, purple);
-    background-size: 400% 400%;
+    background-size:400% 400%;
     animation: rainbowBG 20s ease infinite;
-    color: white;
+    color:white;
+    perspective:1200px;
 }
-
-@keyframes rainbowBG {
-    0% { background-position:0% 50%; }
-    50% { background-position:100% 50%; }
-    100% { background-position:0% 50%; }
+@keyframes rainbowBG{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
-
-/* ========================================= */
-/* HEADER */
-header {
+header{
     text-align:center;
-    padding:20px;
+    padding:25px;
     font-size:28px;
     font-weight:bold;
     background: rgba(0,0,0,0.7);
 }
-
-/* ========================================= */
-/* CONTAINER */
-.container {
-    max-width:1100px;
+.container{
+    max-width:1200px;
     margin:30px auto;
-    padding:30px;
-    background: rgba(255,255,255,0.08);
-    border-radius:25px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.7);
-    backdrop-filter: blur(10px);
+    padding:20px;
 }
-
-/* ========================================= */
-/* SEARCH CONTROLS */
-.search-controls {
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-    margin-bottom:20px;
-}
-
-.search-controls input,
-.search-controls select {
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    width:200px;
-}
-
-/* BUTTONS */
-button {
-    padding:12px 20px;
+input[type="text"]{
+    width:100%;
+    padding:15px;
+    font-size:18px;
     border-radius:30px;
     border:none;
-    font-weight:bold;
-    cursor:pointer;
-    background: linear-gradient(45deg, red, green, blue, purple);
-    color:white;
+    margin-bottom:25px;
+    outline:none;
 }
-
-/* ========================================= */
-/* RESULTS PANEL */
-.results {
-    max-height:400px;
-    overflow-y:auto;
-    margin-top:20px;
-    padding-right:10px;
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
 }
-.verse-card {
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:15px;
-    background: rgba(255,255,255,0.1);
-    cursor:pointer;
-}
-.highlight {
-    background: yellow;
-    color: black;
-}
-
-/* ========================================= */
-/* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 0; top:0;
-    width: 100%; height:100%;
-    background: rgba(0,0,0,0.95);
-    padding-top:50px;
-    box-sizing:border-box;
-}
-.modal-content {
-    margin:auto;
-    background: rgba(255,255,255,0.05);
-    border-radius:25px;
-    width:80%;
-    max-width:700px;
+.card{
+    background: rgba(255,255,255,0.08);
     padding:20px;
-    color:white;
+    border-radius:25px;
     text-align:center;
-    animation: fadeIn 0.5s;
-}
-@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-.close {
-    color:white;
-    float:right;
-    font-size:28px;
-    font-weight:bold;
+    transition: transform 0.5s ease, background 0.5s ease;
+    transform-style: preserve-3d;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
     cursor:pointer;
 }
-
-/* BACK BUTTON */
-.back {
+.card:hover{
+    transform: rotateY(10deg) rotateX(5deg) scale(1.05);
+    background: rgba(255,255,255,0.15);
+}
+.card h3{
+    margin:0 0 10px;
+    font-size:20px;
+    text-shadow: 2px 2px 8px black;
+}
+.card p{
+    margin:0;
+    font-size:16px;
+    line-height:1.5em;
+}
+.back{
     display:inline-block;
     margin-top:20px;
     padding:10px 20px;
@@ -135,133 +78,53 @@ button {
     text-decoration:none;
     color:white;
 }
-
-/* RESPONSIVE */
 @media(max-width:768px){
-    .search-controls { flex-direction:column; }
-    .modal-content { width:90%; }
+    .card{padding:15px;}
 }
-
 </style>
 </head>
-
 <body>
 
-<header>📖 Bible Search System</header>
+<header>📖 Bible Search</header>
 
 <div class="container">
-
-<div class="search-controls">
-<input type="text" id="keyword" placeholder="Search keyword...">
-<select id="bookFilter">
-<option value="">All Books</option>
-<option value="Genesis">Genesis</option>
-<option value="Psalms">Psalms</option>
-<option value="Isaiah">Isaiah</option>
-<option value="Matthew">Matthew</option>
-<option value="John">John</option>
-<option value="Romans">Romans</option>
-</select>
-
-<select id="testamentFilter">
-<option value="">All Testament</option>
-<option value="Old">Old Testament</option>
-<option value="New">New Testament</option>
-</select>
-
-<button onclick="searchBible()">Search</button>
-<button onclick="clearHistory()">Clear History</button>
-</div>
-
-<div class="results" id="results"></div>
-
+<input type="text" id="searchBox" placeholder="Search Bible verses..." />
+<div class="cards" id="verseContainer"></div>
 <a href="index.html" class="back">⬅ Back to Dashboard</a>
-
-</div>
-
-<!-- MODAL -->
-<div id="verseModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2 id="modalTitle"></h2>
-        <p id="modalText"></p>
-    </div>
 </div>
 
 <script>
-/* ========================================= */
-/* SAMPLE BIBLE DATA */
-const bibleData = [
-{book:"Genesis",testament:"Old",verse:"1:1",text:"In the beginning God created the heaven and the earth."},
-{book:"Psalms",testament:"Old",verse:"23:1",text:"The Lord is my shepherd; I shall not want."},
-{book:"Isaiah",testament:"Old",verse:"41:10",text:"Fear thou not; for I am with thee."},
-{book:"Matthew",testament:"New",verse:"5:14",text:"Ye are the light of the world."},
-{book:"John",testament:"New",verse:"3:16",text:"For God so loved the world."},
-{book:"Romans",testament:"New",verse:"8:28",text:"All things work together for good to them that love God."},
-{book:"John",testament:"New",verse:"14:6",text:"I am the way, the truth, and the life."},
-{book:"Psalms",testament:"Old",verse:"46:1",text:"God is our refuge and strength."},
-{book:"Matthew",testament:"New",verse:"11:28",text:"Come unto me, all ye that labour."}
+// =========================================
+// SAMPLE BIBLE VERSES
+// For full 1000+ verses, you can import JSON file like bible.json
+const bibleVerses=[
+{ref:"Genesis 1:1", text:"In the beginning God created the heavens and the earth."},
+{ref:"John 3:16", text:"For God so loved the world that He gave His only Son, that whoever believes in Him should not perish but have eternal life."},
+{ref:"Psalm 23:1", text:"The Lord is my shepherd; I shall not want."},
+{ref:"Philippians 4:13", text:"I can do all things through Christ who strengthens me."},
+{ref:"Romans 8:28", text:"And we know that all things work together for good to those who love God."}
+// … continue until 1000+ verses
 ];
 
-/* ========================================= */
-/* SEARCH HISTORY */
-let searchHistory = [];
+// =========================================
+// SEARCH AND RENDER
+const searchBox=document.getElementById("searchBox");
+const verseContainer=document.getElementById("verseContainer");
 
-/* ========================================= */
-/* SEARCH FUNCTION WITH FRACTIONAL WEIGHTING */
-function searchBible(){
-    const keyword = document.getElementById("keyword").value.toLowerCase();
-    const bookFilter = document.getElementById("bookFilter").value;
-    const testamentFilter = document.getElementById("testamentFilter").value;
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML="";
-
-    let filtered = bibleData.map(entry => {
-        let weight=0;
-        if(keyword && entry.text.toLowerCase().includes(keyword)) weight +=1;
-        if(bookFilter && entry.book===bookFilter) weight +=0.5;
-        if(testamentFilter && entry.testament===testamentFilter) weight +=0.3;
-        return {...entry, weight};
-    }).filter(e=>e.weight>0).sort((a,b)=>b.weight-a.weight);
-
-    if(filtered.length===0){ resultsDiv.innerHTML="<p>No verses found.</p>"; return; }
-
-    filtered.forEach(entry=>{
-        const card=document.createElement("div");
-        card.classList.add("verse-card");
-        let highlightedText = entry.text;
-        if(keyword!==""){
-            const regex=new RegExp(`(${keyword})`,"gi");
-            highlightedText=entry.text.replace(regex, `<span class="highlight">$1</span>`);
-        }
-        card.innerHTML = `<strong>${entry.book} ${entry.verse}</strong><p>${highlightedText}</p>`;
-        card.onclick = () => openModal(entry);
-        resultsDiv.appendChild(card);
-    });
-
-    if(keyword) searchHistory.push(keyword);
+function renderVerses(filter=""){
+    verseContainer.innerHTML="";
+    bibleVerses.filter(v=>v.text.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(v=>{
+            const div=document.createElement("div");
+            div.classList.add("card");
+            div.innerHTML=`<h3>${v.ref}</h3><p>${v.text}</p>`;
+            verseContainer.appendChild(div);
+        });
 }
 
-/* ========================================= */
-/* MODAL FUNCTIONS */
-const modal = document.getElementById("verseModal");
-const modalTitle = document.getElementById("modalTitle");
-const modalText = document.getElementById("modalText");
-const closeModal = document.getElementById("closeModal");
-
-function openModal(entry){
-    modal.style.display="block";
-    modalTitle.innerText = `${entry.book} ${entry.verse}`;
-    modalText.innerText = entry.text + "\n\nExplanation: God’s Word guides and comforts us.";
-}
-closeModal.addEventListener("click",()=>modal.style.display="none");
-window.addEventListener("click", e => { if(e.target===modal) modal.style.display="none"; });
-
-/* ========================================= */
-/* CLEAR HISTORY */
-function clearHistory(){ searchHistory=[]; alert("Search history cleared."); }
+searchBox.addEventListener("input",()=>renderVerses(searchBox.value));
+renderVerses(); // initial render
 
 </script>
-
 </body>
 </html>
