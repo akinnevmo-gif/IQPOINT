@@ -3,16 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OneLife | Gospel Dashboard</title>
-
-<!-- PWA META -->
-<meta name="theme-color" content="#000000">
-<meta name="description" content="OneLife Gospel Experience - Word, Worship, Prayer, Motivation & Teachings & Bible Stories & Chatbot">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
+<title>🌈 OneLife Dashboard</title>
 <style>
 body{
     margin:0;
@@ -34,18 +25,6 @@ header{
     font-size:30px;
     font-weight:bold;
     background: rgba(0,0,0,0.7);
-    letter-spacing:2px;
-}
-.install-btn{
-    display:none;
-    margin:20px auto;
-    padding:12px 30px;
-    border-radius:30px;
-    border:none;
-    background: linear-gradient(45deg, red, green, blue, purple);
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
 }
 .status{
     text-align:center;
@@ -73,6 +52,7 @@ header{
     transition: transform 0.5s ease, background 0.5s ease;
     transform-style: preserve-3d;
     box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    position: relative;
 }
 .card:hover{
     transform: rotateY(15deg) rotateX(10deg) scale(1.08);
@@ -83,33 +63,34 @@ header{
     font-size:22px;
     text-shadow:2px 2px 8px black;
 }
-.back{
-    display:inline-block;
-    margin-top:20px;
-    padding:10px 20px;
-    border-radius:30px;
-    background: linear-gradient(45deg, red, green, blue, purple);
-    text-decoration:none;
+.preview{
+    display:none;
+    position:absolute;
+    top:110%;
+    left:50%;
+    transform:translateX(-50%);
+    width:260px;
+    background: rgba(0,0,0,0.95);
     color:white;
-}
-@media(max-width:768px){ 
-    .container{padding:20px;} 
-    .card{padding:20px;}
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.8);
+    font-size:14px;
+    text-align:left;
+    z-index:100;
+    pointer-events:none;
 }
 </style>
 </head>
 <body>
 
 <header>🌈 OneLife Dashboard</header>
-
-<button class="install-btn" id="installBtn">Install OneLife</button>
-
-<div class="status" id="statusText"></div>
+<div class="status online" id="statusText">You are Online</div>
 
 <div class="container">
 <div class="dashboard">
 
-<!-- DASHBOARD CARDS -->
+<!-- Cards -->
 <div class="card" onclick="location.href='cross.html'">✝ 3D Cross Experience</div>
 <div class="card" onclick="location.href='worship.html'">🎵 Worship Player</div>
 <div class="card" onclick="location.href='bible-search.html'">📖 Bible Search</div>
@@ -117,47 +98,18 @@ header{
 <div class="card" onclick="location.href='motivation-teachings.html'">💬 Motivation & Teachings</div>
 <div class="card" onclick="location.href='donation.html'">💖 Donate & WhatsApp</div>
 <div class="card" onclick="location.href='bible-stories.html'">📜 Bible Stories</div>
-<div class="card" onclick="location.href='oneLife-consultant.html'">🤖 OneLife Consultant</div>
+
+<!-- OneLife Consultant -->
+<div class="card" id="consultantCard" onclick="location.href='oneLife-consultant.html'">
+    🤖 OneLife Consultant
+    <div class="preview" id="consultantPreview">Loading preview...</div>
+</div>
 
 </div>
 </div>
 
 <script>
-/* ========================================= */
-/* SERVICE WORKER */
-if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('service-worker.js')
-    .then(reg=>{
-        console.log("Service Worker Registered", reg);
-        reg.onupdatefound=()=>{
-            const newWorker=reg.installing;
-            newWorker.onstatechange=()=>{
-                if(newWorker.state==='installed' && navigator.serviceWorker.controller){
-                    if(confirm("New update available. Refresh now?")) window.location.reload();
-                }
-            }
-        }
-    }).catch(err=>console.log("SW registration failed",err));
-}
-
-/* ========================================= */
-/* PWA INSTALL PROMPT */
-let deferredPrompt;
-const installBtn=document.getElementById("installBtn");
-window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault();
-    deferredPrompt=e;
-    installBtn.style.display="block";
-});
-installBtn.addEventListener('click',async()=>{
-    installBtn.style.display="none";
-    deferredPrompt.prompt();
-    const choiceResult=await deferredPrompt.userChoice;
-    deferredPrompt=null;
-});
-
-/* ========================================= */
-/* ONLINE/OFFLINE */
+// Online/offline
 const statusText=document.getElementById("statusText");
 function updateOnlineStatus(){
     if(navigator.onLine){
@@ -172,14 +124,31 @@ window.addEventListener('online',updateOnlineStatus);
 window.addEventListener('offline',updateOnlineStatus);
 updateOnlineStatus();
 
-/* ========================================= */
-/* TITLE ANIMATION */
-let titleIndex=0;
-const titleText="OneLife Gospel Experience";
-setInterval(()=>{
-    document.title=titleText.substring(0,titleIndex++);
-    if(titleIndex>titleText.length) titleIndex=0;
-},300);
+// Consultant Hover Preview
+const consultantCard = document.getElementById("consultantCard");
+const consultantPreview = document.getElementById("consultantPreview");
+
+consultantCard.addEventListener("mouseenter", async () => {
+    consultantPreview.style.display = "block";
+    consultantPreview.textContent = "Loading preview...";
+
+    try {
+        const res = await fetch('/api/openai',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({prompt:"Give a short 20-word gospel greeting for OneLife dashboard preview.", temperature:0.7})
+        });
+        const data = await res.json();
+        consultantPreview.textContent = data.reply || "Welcome to OneLife Consultant!";
+    } catch(err){
+        consultantPreview.textContent = "Unable to load preview.";
+        console.error(err);
+    }
+});
+
+consultantCard.addEventListener("mouseleave", () => {
+    consultantPreview.style.display = "none";
+});
 </script>
 
 </body>
