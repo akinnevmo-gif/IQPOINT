@@ -15,13 +15,13 @@
 
 <style>
 /* ========================================= */
-/* GLOBAL BACKGROUND */
+/* GLOBAL */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
     background: linear-gradient(135deg, black, red, green, blue, purple);
     background-size:400% 400%;
-    animation: rainbowBG 18s ease infinite;
+    animation: rainbowBG 20s ease infinite;
     color:white;
     perspective:1200px;
 }
@@ -30,8 +30,6 @@ body{
     50%{background-position:100% 50%;}
     100%{background-position:0% 50%;}
 }
-
-/* HEADER */
 header{
     text-align:center;
     padding:25px;
@@ -40,8 +38,6 @@ header{
     background: rgba(0,0,0,0.7);
     letter-spacing:2px;
 }
-
-/* INSTALL BUTTON */
 .install-btn{
     display:none;
     margin:20px auto;
@@ -53,8 +49,6 @@ header{
     font-weight:bold;
     cursor:pointer;
 }
-
-/* ONLINE/OFFLINE STATUS */
 .status{
     text-align:center;
     margin-top:10px;
@@ -62,8 +56,6 @@ header{
 }
 .online{color:lightgreen;}
 .offline{color:red;}
-
-/* DASHBOARD GRID */
 .container{
     padding:40px;
     max-width:1200px;
@@ -74,8 +66,6 @@ header{
     grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
     gap:25px;
 }
-
-/* 3D CARD EFFECT */
 .card{
     background: rgba(255,255,255,0.08);
     padding:30px;
@@ -90,15 +80,20 @@ header{
     transform: rotateY(15deg) rotateX(10deg) scale(1.08);
     background: rgba(255,255,255,0.15);
 }
-
-/* CARD TEXT */
 .card h3{
     margin:0 0 10px;
     font-size:22px;
     text-shadow:2px 2px 8px black;
 }
-
-/* RESPONSIVE */
+.back{
+    display:inline-block;
+    margin-top:20px;
+    padding:10px 20px;
+    border-radius:30px;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    text-decoration:none;
+    color:white;
+}
 @media(max-width:768px){ 
     .container{padding:20px;} 
     .card{padding:20px;}
@@ -116,7 +111,7 @@ header{
 <div class="container">
 <div class="dashboard">
 
-<!-- FEATURE CARDS -->
+<!-- DASHBOARD CARDS -->
 <div class="card" onclick="location.href='cross.html'">✝ 3D Cross Experience</div>
 <div class="card" onclick="location.href='worship.html'">🎵 Worship Player</div>
 <div class="card" onclick="location.href='bible-search.html'">📖 Bible Search</div>
@@ -130,7 +125,7 @@ header{
 
 <script>
 /* ========================================= */
-/* SERVICE WORKER REGISTRATION */
+/* SERVICE WORKER */
 if('serviceWorker' in navigator){
     navigator.serviceWorker.register('service-worker.js')
     .then(reg=>{
@@ -143,15 +138,14 @@ if('serviceWorker' in navigator){
                 }
             }
         }
-    })
-    .catch(err=>console.log("SW registration failed",err));
+    }).catch(err=>console.log("SW registration failed",err));
 }
 
 /* ========================================= */
-/* INSTALL PROMPT */
+/* PWA INSTALL PROMPT */
 let deferredPrompt;
 const installBtn=document.getElementById("installBtn");
-window.addEventListener('beforeinstallprompt',(e)=>{
+window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();
     deferredPrompt=e;
     installBtn.style.display="block";
@@ -160,12 +154,11 @@ installBtn.addEventListener('click',async()=>{
     installBtn.style.display="none";
     deferredPrompt.prompt();
     const choiceResult=await deferredPrompt.userChoice;
-    if(choiceResult.outcome==='accepted'){ console.log('User accepted install'); }
     deferredPrompt=null;
 });
 
 /* ========================================= */
-/* ONLINE/OFFLINE DETECTION */
+/* ONLINE/OFFLINE */
 const statusText=document.getElementById("statusText");
 function updateOnlineStatus(){
     if(navigator.onLine){
@@ -181,7 +174,7 @@ window.addEventListener('offline',updateOnlineStatus);
 updateOnlineStatus();
 
 /* ========================================= */
-/* ANIMATED TITLE */
+/* TITLE ANIMATION */
 let titleIndex=0;
 const titleText="OneLife Gospel Experience";
 setInterval(()=>{
