@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OneLife | Motivation & Teachings</title>
+
+<style>
+/* ========================================= */
+/* GLOBAL BACKGROUND */
+body {
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, black, red, green, blue, purple);
+    background-size:400% 400%;
+    animation: rainbowBG 20s ease infinite;
+    color:white;
+}
+
+@keyframes rainbowBG{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* ========================================= */
+/* HEADER */
+header{
+    text-align:center;
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
+    background: rgba(0,0,0,0.7);
+}
+
+/* ========================================= */
+/* CONTAINER */
+.container{
+    max-width:1100px;
+    margin:30px auto;
+    padding:30px;
+    background: rgba(255,255,255,0.08);
+    border-radius:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================= */
+/* QUOTES */
+.quote-container{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:1.3em;
+    font-style:italic;
+    padding:20px;
+    background: rgba(255,255,255,0.05);
+    border-radius:15px;
+}
+
+/* ========================================= */
+/* TEACHINGS CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background: rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:25px;
+    cursor:pointer;
+    text-align:center;
+    transition: 0.5s;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    transform-style: preserve-3d;
+}
+.card:hover{
+    transform: scale(1.05) rotateX(5deg) rotateY(5deg);
+    background: rgba(255,255,255,0.15);
+}
+
+/* BACK BUTTON */
+.back{
+    display:inline-block;
+    margin-top:20px;
+    padding:10px 20px;
+    border-radius:30px;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    text-decoration:none;
+    color:white;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .quote-container{font-size:1em; padding:15px;}
+    .card{padding:20px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>💬 Motivation & Teachings</header>
+
+<div class="container">
+
+<div class="quote-container" id="quoteContainer">“Believe in God’s plan.”</div>
+
+<div class="cards" id="cardsContainer"></div>
+
+<a href="index.html" class="back">⬅ Back to Dashboard</a>
+
+</div>
+
+<script>
+/* ========================================= */
+/* QUOTES DATA */
+const quotes = [
+"Faith is taking the first step even when you don’t see the whole staircase.",
+"God’s timing is perfect, trust His plan.",
+"Prayer is the bridge to God’s heart.",
+"Let your light shine to guide others.",
+"With God all things are possible.",
+"Peace comes from surrendering to Him."
+];
+
+/* ========================================= */
+/* TEACHINGS DATA */
+const teachings = [
+{title:"Love Your Neighbor",text:"Jesus taught us to love everyone, even our enemies."},
+{title:"Forgiveness",text:"Forgive those who wrong you; it brings freedom to your heart."},
+{title:"Faith in Action",text:"Act on your faith through good deeds and compassion."},
+{title:"Prayer & Reflection",text:"Spend time in prayer daily to strengthen your connection with God."},
+{title:"Humility",text:"Serve others with humility and gratitude."},
+{title:"Stewardship",text:"Take care of the earth and help those in need."}
+];
+
+/* ========================================= */
+/* DISPLAY RANDOM QUOTE */
+const quoteContainer = document.getElementById("quoteContainer");
+
+function showRandomQuote(){
+    const index = Math.floor(Math.random()*quotes.length);
+    quoteContainer.innerText = "“"+quotes[index]+"”";
+}
+setInterval(showRandomQuote,7000);
+showRandomQuote();
+
+/* ========================================= */
+/* RENDER TEACHINGS CARDS */
+const cardsContainer = document.getElementById("cardsContainer");
+
+teachings.forEach((t)=>{
+    const div = document.createElement("div");
+    div.classList.add("card");
+    div.innerHTML = `<h3>${t.title}</h3><p>${t.text}</p>`;
+    cardsContainer.appendChild(div);
+});
+
+</script>
+
+</body>
+</html>
