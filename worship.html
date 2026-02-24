@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OneLife | Worship Player</title>
+
+<style>
+
+/* ========================================= */
+/* GLOBAL BACKGROUND */
+/* ========================================= */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, black, red, green, blue, purple);
+    background-size: 400% 400%;
+    animation: rainbowBG 20s ease infinite;
+    color: white;
+    overflow-x: hidden;
+}
+
+@keyframes rainbowBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* ========================================= */
+/* HEADER */
+/* ========================================= */
+
+header {
+    text-align: center;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    background: rgba(0,0,0,0.7);
+}
+
+/* ========================================= */
+/* MAIN CONTAINER */
+/* ========================================= */
+
+.player-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================= */
+/* ALBUM DISC */
+/* ========================================= */
+
+.disc {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+    border-radius: 50%;
+    background: radial-gradient(circle, purple, blue, green, red, black);
+    animation: spinDisc 6s linear infinite;
+    box-shadow: 0 0 40px rgba(255,255,255,0.5);
+}
+
+.paused {
+    animation-play-state: paused;
+}
+
+@keyframes spinDisc {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+/* ========================================= */
+/* CONTROLS */
+/* ========================================= */
+
+.controls button {
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    color: white;
+    transition: 0.3s;
+}
+
+.controls button:hover {
+    transform: scale(1.1);
+}
+
+/* ========================================= */
+/* PROGRESS BAR */
+/* ========================================= */
+
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, red, green, blue, purple);
+    border-radius: 20px;
+}
+
+/* ========================================= */
+/* VOLUME */
+/* ========================================= */
+
+.volume-container {
+    margin: 20px;
+}
+
+input[type=range] {
+    width: 60%;
+}
+
+/* ========================================= */
+/* PLAYLIST */
+/* ========================================= */
+
+.playlist {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.track {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.track:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* ========================================= */
+/* VISUALIZER */
+/* ========================================= */
+
+.visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100px;
+    margin-top: 20px;
+}
+
+.bar {
+    width: 6px;
+    height: 20px;
+    margin: 0 3px;
+    background: linear-gradient(to top, red, green, blue, purple);
+    animation: bounce 1s infinite ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 100% {height:20px;}
+    50% {height:80px;}
+}
+
+/* ========================================= */
+/* BACK BUTTON */
+/* ========================================= */
+
+.back {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    text-decoration: none;
+    color: white;
+}
+
+/* ========================================= */
+/* RESPONSIVE */
+/* ========================================= */
+
+@media(max-width:768px){
+    .player-container {
+        margin: 20px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🎵 Worship Experience</header>
+
+<div class="player-container">
+
+<h2 id="songTitle">Worship Song 1</h2>
+
+<div class="disc" id="disc"></div>
+
+<div class="controls">
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()">▶ / ⏸</button>
+<button onclick="nextSong()">⏭</button>
+</div>
+
+<div class="progress-container" onclick="setProgress(event)">
+<div class="progress" id="progress"></div>
+</div>
+
+<div class="volume-container">
+Volume:
+<input type="range" min="0" max="1" step="0.01" value="1" onchange="setVolume(this.value)">
+</div>
+
+<div class="visualizer" id="visualizer"></div>
+
+<div class="playlist" id="playlist"></div>
+
+<a href="index.html" class="back">⬅ Back to Dashboard</a>
+
+</div>
+
+<audio id="audio"></audio>
+
+<script>
+
+/* ========================================= */
+/* PLAYLIST DATA */
+/* ========================================= */
+
+const songs = [
+{
+    title: "Worship Song 1",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+},
+{
+    title: "Worship Song 2",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+},
+{
+    title: "Worship Song 3",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+}
+];
+
+let currentSong = 0;
+
+const audio = document.getElementById("audio");
+const progress = document.getElementById("progress");
+const disc = document.getElementById("disc");
+const songTitle = document.getElementById("songTitle");
+const playlistDiv = document.getElementById("playlist");
+
+/* ========================================= */
+/* LOAD SONG */
+/* ========================================= */
+
+function loadSong(index){
+    audio.src = songs[index].src;
+    songTitle.innerText = songs[index].title;
+}
+
+loadSong(currentSong);
+
+/* ========================================= */
+/* PLAY / PAUSE */
+/* ========================================= */
+
+function togglePlay(){
+    if(audio.paused){
+        audio.play();
+        disc.classList.remove("paused");
+    } else {
+        audio.pause();
+        disc.classList.add("paused");
+    }
+}
+
+/* ========================================= */
+/* NEXT / PREVIOUS */
+/* ========================================= */
+
+function nextSong(){
+    currentSong++;
+    if(currentSong >= songs.length) currentSong = 0;
+    loadSong(currentSong);
+    audio.play();
+}
+
+function prevSong(){
+    currentSong--;
+    if(currentSong < 0) currentSong = songs.length - 1;
+    loadSong(currentSong);
+    audio.play();
+}
+
+/* ========================================= */
+/* PROGRESS UPDATE */
+/* ========================================= */
+
+audio.addEventListener("timeupdate", () => {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.style.width = percent + "%";
+});
+
+/* ========================================= */
+/* SEEK FUNCTION */
+/* ========================================= */
+
+function setProgress(e){
+    const width = e.currentTarget.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+    audio.currentTime = (clickX / width) * duration;
+}
+
+/* ========================================= */
+/* VOLUME */
+/* ========================================= */
+
+function setVolume(value){
+    audio.volume = value;
+}
+
+/* ========================================= */
+/* PLAYLIST RENDER */
+/* ========================================= */
+
+songs.forEach((song, index) => {
+    const div = document.createElement("div");
+    div.classList.add("track");
+    div.innerText = song.title;
+    div.onclick = () => {
+        currentSong = index;
+        loadSong(currentSong);
+        audio.play();
+    };
+    playlistDiv.appendChild(div);
+});
+
+/* ========================================= */
+/* VISUALIZER BARS */
+/* ========================================= */
+
+for(let i = 0; i < 30; i++){
+    const bar = document.createElement("div");
+    bar.classList.add("bar");
+    bar.style.animationDelay = (i * 0.05) + "s";
+    document.getElementById("visualizer").appendChild(bar);
+}
+
+</script>
+
+</body>
+</html>
