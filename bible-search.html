@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OneLife | Bible Search</title>
+
+<style>
+
+/* ========================================= */
+/* GLOBAL BACKGROUND */
+/* ========================================= */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, black, red, green, blue, purple);
+    background-size: 400% 400%;
+    animation: rainbowBG 20s ease infinite;
+    color: white;
+}
+
+@keyframes rainbowBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* ========================================= */
+/* HEADER */
+/* ========================================= */
+
+header {
+    text-align: center;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    background: rgba(0,0,0,0.7);
+}
+
+/* ========================================= */
+/* MAIN CONTAINER */
+/* ========================================= */
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 30px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================= */
+/* SEARCH CONTROLS */
+/* ========================================= */
+
+.search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-controls input,
+.search-controls select {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    width: 200px;
+}
+
+/* ========================================= */
+/* BUTTON */
+/* ========================================= */
+
+button {
+    padding: 12px 20px;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    color: white;
+}
+
+/* ========================================= */
+/* RESULTS PANEL */
+/* ========================================= */
+
+.results {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 20px;
+    padding-right: 10px;
+}
+
+.verse-card {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.1);
+}
+
+.highlight {
+    background: yellow;
+    color: black;
+}
+
+/* ========================================= */
+/* BACK BUTTON */
+/* ========================================= */
+
+.back {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: linear-gradient(45deg, red, green, blue, purple);
+    text-decoration: none;
+    color: white;
+}
+
+@media(max-width:768px){
+    .search-controls {
+        flex-direction: column;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>📖 Bible Search System</header>
+
+<div class="container">
+
+<div class="search-controls">
+<input type="text" id="keyword" placeholder="Search keyword...">
+<select id="bookFilter">
+<option value="">All Books</option>
+<option value="Genesis">Genesis</option>
+<option value="Psalms">Psalms</option>
+<option value="Isaiah">Isaiah</option>
+<option value="Matthew">Matthew</option>
+<option value="John">John</option>
+<option value="Romans">Romans</option>
+</select>
+
+<select id="testamentFilter">
+<option value="">All Testament</option>
+<option value="Old">Old Testament</option>
+<option value="New">New Testament</option>
+</select>
+
+<button onclick="searchBible()">Search</button>
+</div>
+
+<div class="results" id="results"></div>
+
+<a href="index.html" class="back">⬅ Back to Dashboard</a>
+
+</div>
+
+<script>
+
+/* ========================================= */
+/* SAMPLE BIBLE DATA */
+/* ========================================= */
+
+const bibleData = [
+{book:"Genesis", testament:"Old", verse:"1:1", text:"In the beginning God created the heaven and the earth."},
+{book:"Psalms", testament:"Old", verse:"23:1", text:"The Lord is my shepherd; I shall not want."},
+{book:"Isaiah", testament:"Old", verse:"41:10", text:"Fear thou not; for I am with thee."},
+{book:"Matthew", testament:"New", verse:"5:14", text:"Ye are the light of the world."},
+{book:"John", testament:"New", verse:"3:16", text:"For God so loved the world."},
+{book:"Romans", testament:"New", verse:"8:28", text:"All things work together for good to them that love God."},
+{book:"John", testament:"New", verse:"14:6", text:"I am the way, the truth, and the life."},
+{book:"Psalms", testament:"Old", verse:"46:1", text:"God is our refuge and strength."},
+{book:"Matthew", testament:"New", verse:"11:28", text:"Come unto me, all ye that labour."}
+];
+
+/* ========================================= */
+/* SEARCH FUNCTION */
+/* ========================================= */
+
+function searchBible(){
+
+    const keyword = document.getElementById("keyword").value.toLowerCase();
+    const bookFilter = document.getElementById("bookFilter").value;
+    const testamentFilter = document.getElementById("testamentFilter").value;
+    const resultsDiv = document.getElementById("results");
+
+    resultsDiv.innerHTML = "";
+
+    const filtered = bibleData.filter(entry => {
+
+        const matchKeyword = keyword === "" || entry.text.toLowerCase().includes(keyword);
+        const matchBook = bookFilter === "" || entry.book === bookFilter;
+        const matchTestament = testamentFilter === "" || entry.testament === testamentFilter;
+
+        return matchKeyword && matchBook && matchTestament;
+    });
+
+    if(filtered.length === 0){
+        resultsDiv.innerHTML = "<p>No verses found.</p>";
+        return;
+    }
+
+    filtered.forEach(entry => {
+
+        const card = document.createElement("div");
+        card.classList.add("verse-card");
+
+        let highlightedText = entry.text;
+
+        if(keyword !== ""){
+            const regex = new RegExp(`(${keyword})`, "gi");
+            highlightedText = entry.text.replace(regex, `<span class="highlight">$1</span>`);
+        }
+
+        card.innerHTML = `
+            <strong>${entry.book} ${entry.verse}</strong>
+            <p>${highlightedText}</p>
+        `;
+
+        resultsDiv.appendChild(card);
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
